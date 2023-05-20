@@ -73,7 +73,7 @@ class Camera:
 class PlayCamera(Camera):
     def __init__(self, app, position=(0, 0, 4), yaw=-90, pitch=0):
         self.camera_spline = CameraSpline()
-        self.triggers = np.loadtxt("camera_data/triggers.txt")[:10]
+        self.triggers = np.loadtxt("camera_data/triggers.txt")
         self.trig_idx = 0
         self.near, self.far = 1e-3, 50
 
