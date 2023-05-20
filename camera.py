@@ -1,12 +1,13 @@
 import glm
 import pygame as pg
+from camera_data.camera_spline import CameraSpline
+import numpy as np
 
 FOV = 50  # deg
 NEAR = 0.1
 FAR = 100
 SPEED = 0.005
 SENSITIVITY = 0.04
-
 
 class Camera:
     def __init__(self, app, position=(0, 0, 4), yaw=-90, pitch=0):
@@ -69,21 +70,51 @@ class Camera:
         return glm.perspective(glm.radians(FOV), self.aspect_ratio, NEAR, FAR)
 
 
+class PlayCamera(Camera):
+    def __init__(self, app, position=(0, 0, 4), yaw=-90, pitch=0):
+        self.camera_spline = CameraSpline()
+        self.triggers = np.loadtxt("camera_data/triggers.txt")[:10]
+        self.trig_idx = 0
+        self.near, self.far = 1e-3, 50
 
+        self.fow = self.camera_spline.get_fow()
+        right, up, forward, pos = self.camera_spline.interpolate(self.triggers[self.trig_idx])
+        super().__init__(app, pos, yaw, pitch)
 
+        self.up = glm.vec3(*up)
+        self.right = glm.vec3(*right)
+        self.forward = glm.vec3(*forward)
 
+        self.m_view = self.get_view_matrix()
+        self.m_proj = self.get_projection_matrix()
 
+        self.trig_idx += 1
 
+        self.done = False   # if the thing is done playing
+    
+    def rotate(self):
+        pass
 
-
-
-
-
-
-
-
-
-
-
-
-
+    def update_camera_vectors(self):
+        if self.trig_idx >= len(self.triggers):
+            self.app.attr["done"] = True
+            return
+        time = self.triggers[self.trig_idx]
+        right, up, forward, pos = self.camera_spline.interpolate(time)
+        self.right = glm.vec3(*right)
+        self.up = glm.vec3(*up)
+        self.forward = glm.vec3(*forward)
+        self.position = glm.vec3(*pos)
+        
+        self.trig_idx += 1
+    
+    def update(self):
+        self.update_camera_vectors()
+        self.m_view = self.get_view_matrix()
+    
+    def move(self):
+        pass
+    
+    
+    def get_projection_matrix(self):
+        return glm.perspective(self.fow, self.aspect_ratio, self.near, self.far)
