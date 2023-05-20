@@ -2,9 +2,8 @@ import numpy as np
 import scipy
 import json
 
-cam_spline_path = "/home/jesus/projects/3D-Graphics-Engine/camera_data/camera_spline.npy"
-intrinsics_path = "/home/jesus/projects/3D-Graphics-Engine/camera_data/intrinsics.json"
-# intrinsics_path = "/home/jesus/projects/3D-Graphics-Engine/camera_data/ori_intrinsics.json"
+cam_spline_path = "camera_data/camera_spline.npy"
+intrinsics_path = "camera_data/intrinsics.json"
 
 
 def read_intrinsics(intrxs_path):
@@ -58,12 +57,8 @@ class CameraSpline:
         return right, up, forward, eye
     
     def get_fow(self):
+        """
+        calculate field of view given intrinsics
+        """
         fx, fy, cx, cy = self.intrinsics
         return 2*np.arctan(cy/fy)
-
-
-
-if __name__ == "__main__":
-    cs = CameraSpline("synthetic_scene/camera_spline.npy")
-    eye, rot = cs.interpolate(np.linspace(0, 1e7, 10))
-    print(np.einsum("nij,nj->ni", rot, eye))
