@@ -2,6 +2,8 @@ import glm
 import pygame as pg
 from camera_data.camera_spline import CameraSpline
 import numpy as np
+from tqdm import tqdm
+
 
 FOV = 50  # deg
 NEAR = 0.1
@@ -73,7 +75,7 @@ class Camera:
 class PlayCamera(Camera):
     def __init__(self, app, position=(0, 0, 4), yaw=-90, pitch=0):
         self.camera_spline = CameraSpline()
-        self.triggers = np.loadtxt("camera_data/triggers.txt")
+        self.triggers = np.loadtxt("camera_data/triggers.txt")[:10]
         self.trig_idx = 0
         self.near, self.far = 1e-3, 50
 
@@ -91,6 +93,7 @@ class PlayCamera(Camera):
         self.trig_idx += 1
 
         self.done = False   # if the thing is done playing
+        self.pbar = tqdm(total=len(self.triggers), desc="playing traj") 
     
     def rotate(self):
         pass
@@ -98,6 +101,7 @@ class PlayCamera(Camera):
     def update_camera_vectors(self):
         if self.trig_idx >= len(self.triggers):
             self.app.attr["done"] = True
+            self.pbar.close()
             return
         time = self.triggers[self.trig_idx]
         right, up, forward, pos = self.camera_spline.interpolate(time)
@@ -107,6 +111,7 @@ class PlayCamera(Camera):
         self.position = glm.vec3(*pos)
         
         self.trig_idx += 1
+        self.pbar.update(1)
     
     def update(self):
         self.update_camera_vectors()
@@ -114,7 +119,6 @@ class PlayCamera(Camera):
     
     def move(self):
         pass
-    
     
     def get_projection_matrix(self):
         return glm.perspective(self.fow, self.aspect_ratio, self.near, self.far)
