@@ -92,7 +92,6 @@ class PlayCamera(Camera):
 
         self.trig_idx += 1
 
-        self.done = False   # if the thing is done playing
         self.pbar = tqdm(total=len(self.triggers), desc="playing traj") 
     
     def rotate(self):
