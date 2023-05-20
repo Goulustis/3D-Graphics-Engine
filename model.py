@@ -79,11 +79,12 @@ class ExtendedBaseModel(BaseModel):
         self.program['light.position'].write(self.app.light.position)
         self.program['light.Ia'].write(self.app.light.Ia)
         self.program['light.Id'].write(self.app.light.Id)
-        self.program['light.Is'].write(self.app.light.Is)
+        # self.program['light.Is'].write(self.app.light.Is)
 
 
 class Cube(ExtendedBaseModel):
-    def __init__(self, app, vao_name='cube', tex_id=0, pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
+    def __init__(self, app, vao_name='cube', tex_id=0, 
+                 pos=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1)):
         super().__init__(app, vao_name, tex_id, pos, rot, scale)
 
 
@@ -101,6 +102,11 @@ class Cat(ExtendedBaseModel):
                  pos=(0, 0, 0), rot=(-90, 0, 0), scale=(1, 1, 1)):
         super().__init__(app, vao_name, tex_id, pos, rot, scale)
 
+
+class Robo(ExtendedBaseModel):
+    def __init__(self, app, vao_name='robo', tex_id='robo', 
+                 pos=(0,0,0), rot=(0,0,0), scale=(1,1,1)):
+        super().__init__(app, vao_name, tex_id, pos, rot, scale)
 
 class SkyBox(BaseModel):
     def __init__(self, app, vao_name='skybox', tex_id='skybox',
