@@ -3,7 +3,8 @@ import scipy
 import json
 
 cam_spline_path = "camera_data/camera_spline.npy"
-intrinsics_path = "camera_data/intrinsics.json"
+intrinsics_path = "camera_data/ori_intrinsics.json"
+# intrinsics_path = "camera_data/intrinsics.json"
 
 
 def read_intrinsics(intrxs_path):

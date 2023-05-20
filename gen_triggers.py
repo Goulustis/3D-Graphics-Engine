@@ -1,6 +1,7 @@
 import numpy as np
 import glob
 import os.path as osp
+import os
 
 def gen_colcam_triggers(rgb_dir:str = None, max_t:int = int(10*1e6), mode:str = "mid", n_frames:int = 4096):
     """
@@ -37,7 +38,22 @@ def create_txt_triggers(n_frames, dst_path = "triggers.txt"):
     print("done creating triggers")
 
 
-if __name__ == "__main__":
+def generate_triggers(n_frames=2048):
     dst_path = "camera_data/triggers.txt"
-    create_txt_triggers(4096, dst_path)
+    if osp.exists(dst_path):
+        os.remove(dst_path)
+
+    # create_txt_triggers(4096, dst_path)
+    create_txt_triggers(n_frames, dst_path)
+
+
+
+if __name__ == "__main__":
+    generate_triggers(2048)
+    # dst_path = "camera_data/triggers.txt"
+    # if osp.exists(dst_path):
+    #     os.remove(dst_path)
+
+    # # create_txt_triggers(4096, dst_path)
+    # create_txt_triggers(2048, dst_path)
     
