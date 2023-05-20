@@ -13,6 +13,7 @@ from scene_renderer import SceneRenderer
 from OpenGL.GL import *
 from PIL import Image
 from tqdm import tqdm
+import shutil
 
 class GraphicsEngine:
     def __init__(self, win_size=(1600, 900)):
@@ -38,10 +39,10 @@ class GraphicsEngine:
         self.time = 0
         self.delta_time = 0
         # light
-        self.light = Light()
+        self.light = Light(position=(-3,2,2))
         # camera
-        # self.camera = Camera(self)
-        self.camera = PlayCamera(self)
+        self.camera = Camera(self)
+        # self.camera = PlayCamera(self)
         # mesh
         self.mesh = Mesh(self)
         # scene
@@ -93,7 +94,8 @@ class SimulatorEngine:
         pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, 3)
         pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
         # create opengl context
-        pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF | pg.HIDDEN)
+        # pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF | pg.HIDDEN)
+        pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF)
         # mouse settings
         pg.event.set_grab(False)
         pg.mouse.set_visible(True)
@@ -106,7 +108,7 @@ class SimulatorEngine:
         self.time = 0
         self.delta_time = 0
         # light
-        self.light = Light(position=(-3,3,3))
+        self.light = Light(position=(-3,2,2))
         # camera
         # self.camera = Camera(self)
         self.camera = PlayCamera(self)
@@ -146,11 +148,15 @@ class SimulatorEngine:
         if targ_dir is None:
             targ_dir = self.save_frame_dir
         
-        os.makedirs(targ_dir, exist_ok=True)
+        if osp.exists(targ_dir):
+            shutil.rmtree(targ_dir)
 
+        os.makedirs(targ_dir, exist_ok=True)
+        new_size = (self.WIN_SIZE[0]//2 , self.WIN_SIZE[1]//2)
         for i, img in tqdm(enumerate(self.frames), total=len(self.frames), desc="saving frames"):
             save_path = osp.join(targ_dir, str(i).zfill(6) + ".png")
             img = Image.fromarray(img).convert('L')
+            img = img.resize(new_size, resample=Image.LANCZOS)
             img.save(save_path)
             
 
@@ -166,7 +172,7 @@ if __name__ == '__main__':
     fx, fy, cx, cy = read_intrinsics(intrinsics_path)
     win_size = (int(cx*2), int(cy*2))
     # app = GraphicsEngine(win_size=win_size)
-    app = SimulatorEngine(win_size=win_size, save_frame_dir="generated_imgs/cat_plain")
+    app = SimulatorEngine(win_size=win_size, save_frame_dir="generated_imgs/cat_light_2048")
     app.run()
 
 
