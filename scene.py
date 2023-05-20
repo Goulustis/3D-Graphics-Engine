@@ -19,21 +19,29 @@ class Scene:
 
         # floor
         n, s = 20, 2
-        for x in range(-n, n, s):
-            for z in range(-n, n, s):
+        for x in range(-n, n + 2, s):
+            for z in range(-n, n + 2, s):
                 add(Cube(app, pos=(x, -s, z)))
+                # add(Cube(app, pos=(x, -s, z), tex_id=tex_dic[tex_idx%2]))
+                # tex_idx += 1
 
-        # columns
-        for i in range(9):
-            add(Cube(app, pos=(15, i * s, -9 + i), tex_id=2))
-            add(Cube(app, pos=(15, i * s, 5 - i), tex_id=2))
+        # wall
+        tex_dic = {0 : "white",
+                   1 : "black"}
+        tex_idx = 0
+        for x in range(-n, n + 2, s):
+            for y in range(0, n + 2, s):
+                add(Cube(app, pos=(x, y, -3), tex_id=tex_dic[tex_idx%2]))
+                tex_idx += 1
 
         # cat
-        add(Cat(app, pos=(0, -1, -10)))
+        sz = 0.3
+        add(Cat(app, pos=(0, -1, 0), scale=(sz, sz, sz)))
 
         # moving cube
-        self.moving_cube = MovingCube(app, pos=(0, 6, 8), scale=(3, 3, 3), tex_id=1)
-        add(self.moving_cube)
-
+        # self.moving_cube = MovingCube(app, pos=(0, 6, 8), scale=(3, 3, 3), tex_id=1)
+        # add(self.moving_cube)
+        # add(Cube(app, pos=(-3,3,3), tex_id=1))
     def update(self):
-        self.moving_cube.rot.xyz = self.app.time
+        pass
+        # self.moving_cube.rot.xyz = self.app.time
