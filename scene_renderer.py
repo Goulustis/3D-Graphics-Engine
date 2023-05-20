@@ -20,12 +20,12 @@ class SceneRenderer:
         self.app.ctx.screen.use()
         for obj in self.scene.objects:
             obj.render()
-        self.scene.skybox.render()
+        # self.scene.skybox.render()
 
     def render(self):
         self.scene.update()
         # pass 1
-        self.render_shadow()
+        # self.render_shadow()
         # pass 2
         self.main_render()
 
