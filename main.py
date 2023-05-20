@@ -166,7 +166,7 @@ if __name__ == '__main__':
     fx, fy, cx, cy = read_intrinsics(intrinsics_path)
     win_size = (int(cx*2), int(cy*2))
     # app = GraphicsEngine(win_size=win_size)
-    app = SimulatorEngine(win_size=win_size)
+    app = SimulatorEngine(win_size=win_size, save_frame_dir="generated_imgs/cat_plain")
     app.run()
 
 
