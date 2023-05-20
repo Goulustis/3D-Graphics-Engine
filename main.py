@@ -1,13 +1,18 @@
+import os
+import os.path as osp
 import pygame as pg
 import moderngl as mgl
 import sys
 from model import *
-from camera import Camera
+from camera import Camera, PlayCamera
+from camera_data.camera_spline import read_intrinsics, intrinsics_path
 from light import Light
 from mesh import Mesh
 from scene import Scene
 from scene_renderer import SceneRenderer
-
+from OpenGL.GL import *
+from PIL import Image
+from tqdm import tqdm
 
 class GraphicsEngine:
     def __init__(self, win_size=(1600, 900)):
@@ -22,8 +27,8 @@ class GraphicsEngine:
         # create opengl context
         pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF)
         # mouse settings
-        pg.event.set_grab(True)
-        pg.mouse.set_visible(False)
+        pg.event.set_grab(False)
+        pg.mouse.set_visible(True)
         # detect and use existing opengl context
         self.ctx = mgl.create_context()
         # self.ctx.front_face = 'cw'
@@ -35,13 +40,17 @@ class GraphicsEngine:
         # light
         self.light = Light()
         # camera
-        self.camera = Camera(self)
+        # self.camera = Camera(self)
+        self.camera = PlayCamera(self)
         # mesh
         self.mesh = Mesh(self)
         # scene
         self.scene = Scene(self)
         # renderer
         self.scene_renderer = SceneRenderer(self)
+
+        # extra attributes
+        self.attr = {}
 
     def check_events(self):
         for event in pg.event.get():
@@ -71,8 +80,93 @@ class GraphicsEngine:
             self.delta_time = self.clock.tick(60)
 
 
+class SimulatorEngine:
+    def __init__(self, win_size=(1600, 900), save_frame_dir = "dev_frames"):
+        # init pygame modules
+        pg.init()
+        # window size
+        self.WIN_SIZE = win_size
+
+
+        # set opengl attr
+        pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, 3)
+        pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, 3)
+        pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
+        # create opengl context
+        pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF | pg.HIDDEN)
+        # mouse settings
+        pg.event.set_grab(False)
+        pg.mouse.set_visible(True)
+        
+        
+        # detect and use existing opengl context
+        self.ctx = mgl.create_context()
+        # self.ctx.front_face = 'cw'
+        self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE)
+        self.time = 0
+        self.delta_time = 0
+        # light
+        self.light = Light(position=(-3,3,3))
+        # camera
+        # self.camera = Camera(self)
+        self.camera = PlayCamera(self)
+        # mesh
+        self.mesh = Mesh(self)
+        # scene
+        self.scene = Scene(self)
+        # renderer
+        self.scene_renderer = SceneRenderer(self)
+
+        # extra attributes:
+        self.attr = {"done":False}
+
+        self.frames = []
+        self.save_frame_dir = save_frame_dir
+
+    def render(self):
+        # clear framebuffer
+        self.ctx.clear(color=(0.08, 0.16, 0.18))
+        # render scene
+        self.scene_renderer.render()
+        # swap buffers
+        pg.display.flip()
+
+
+    def run(self):
+        print("simulating")
+        while not (self.attr["done"]):
+            self.camera.update()
+            self.render()
+            img = self.get_img()
+            self.frames.append(img)
+
+        self.save_frames()
+    
+    def save_frames(self, targ_dir=None):
+        if targ_dir is None:
+            targ_dir = self.save_frame_dir
+        
+        os.makedirs(targ_dir, exist_ok=True)
+
+        for i, img in tqdm(enumerate(self.frames), total=len(self.frames), desc="saving frames"):
+            save_path = osp.join(targ_dir, str(i).zfill(6) + ".png")
+            img = Image.fromarray(img).convert('L')
+            img.save(save_path)
+            
+
+
+    def get_img(self):
+        image_buffer = glReadPixels(0, 0, self.WIN_SIZE[0], self.WIN_SIZE[1], OpenGL.GL.GL_RGB, OpenGL.GL.GL_UNSIGNED_BYTE)
+        image = np.frombuffer(image_buffer, dtype=np.uint8).reshape(self.WIN_SIZE[1], self.WIN_SIZE[0], 3)
+        return image[::-1]
+
+
+
 if __name__ == '__main__':
-    app = GraphicsEngine()
+    fx, fy, cx, cy = read_intrinsics(intrinsics_path)
+    win_size = (int(cx*2), int(cy*2))
+    # app = GraphicsEngine(win_size=win_size)
+    app = SimulatorEngine(win_size=win_size)
     app.run()
 
 
