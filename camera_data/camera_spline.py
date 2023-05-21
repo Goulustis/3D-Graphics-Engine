@@ -3,7 +3,7 @@ import scipy
 import json
 
 cam_spline_path = "camera_data/camera_spline.npy"
-intrinsics_path = "camera_data/ori_intrinsics.json"
+intrinsics_path = "camera_data/render_intrinsics.json"
 # intrinsics_path = "camera_data/intrinsics.json"
 
 
@@ -39,7 +39,7 @@ class CameraSpline:
         return eye, target, up
 
     def get_dir_lerp(self, times):
-        steps = 8
+        steps = 48
         t0 = np.floor(times * steps) / steps
         t1 = np.floor(times * steps + 1.0) / steps
         a = ((times - t0) / (t1 - t0))[..., None]
