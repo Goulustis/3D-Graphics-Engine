@@ -16,20 +16,47 @@ def read_intrinsics(intrxs_path):
     fx = fy = data["focal_length"]
 
     return fx, fy, cx, cy
-    # return np.array([[fx, 0, cx],
-    #                  [0, fy, cy],
-    #                  [0, 0, 1]])
 
 class CameraSpline:
-    def __init__(self, filename=cam_spline_path):
+    def __init__(self, filename=cam_spline_path, mode="lerp"):
         splinerep = np.load(filename, allow_pickle=True).item()
         self.eyerep = splinerep["eye"]
         self.targetrep = splinerep["target"]
         self.uprep = splinerep["up"]
-
         self.intrinsics = read_intrinsics(intrinsics_path)
+        self.mode = mode
 
-    def interpolate(self, times, model = "other"):
+        self.get_dir_fn_dic = {"smooth":self.get_dir_smooth,
+                               "lerp": self.get_dir_lerp}
+
+        self.get_dir_fn = self.get_dir_fn_dic[self.mode]
+    
+    def get_dir_smooth(self, times):
+        eye = np.stack(scipy.interpolate.splev(times, self.eyerep), axis=-1)
+        target = np.stack(scipy.interpolate.splev(times, self.targetrep),
+                          axis=-1)
+        up = np.stack(scipy.interpolate.splev(times, self.uprep), axis=-1)
+        return eye, target, up
+
+    def get_dir_lerp(self, times):
+        steps = 8
+        t0 = np.floor(times * steps) / steps
+        t1 = np.floor(times * steps + 1.0) / steps
+        a = ((times - t0) / (t1 - t0))[..., None]
+        eye0 = np.stack(scipy.interpolate.splev(t0, self.eyerep), axis=-1)
+        eye1 = np.stack(scipy.interpolate.splev(t1, self.eyerep), axis=-1)
+        eye = (1 - a) * eye0 + a * eye1
+        target0 = np.stack(scipy.interpolate.splev(t0, self.targetrep), axis=-1)
+        target1 = np.stack(scipy.interpolate.splev(t1, self.targetrep), axis=-1)
+        target = (1 - a) * target0 + a * target1
+        up0 = np.stack(scipy.interpolate.splev(t0, self.uprep), axis=-1)
+        up1 = np.stack(scipy.interpolate.splev(t1, self.uprep), axis=-1)
+        up = (1 - a) * up0 + a * up1
+
+        return eye, target, up
+
+
+    def interpolate(self, times):
         """Interpolate the camera spline at the given times.
         
         Args:
@@ -38,15 +65,12 @@ class CameraSpline:
         
         Returns:
             positions: A numpy array of shape (N, 3) containing the camera
-                positions in world coordinates.
+                positions.
             rotations: A numpy array of shape (N, 3, 3) containing the world to
                 camera rotations.
         """
         times = np.array(times, dtype=np.float64) / 1e7
-        eye = np.stack(scipy.interpolate.splev(times, self.eyerep), axis=-1)
-        target = np.stack(scipy.interpolate.splev(times, self.targetrep),
-                          axis=-1)
-        up = np.stack(scipy.interpolate.splev(times, self.uprep), axis=-1)
+        eye, target, up = self.get_dir_fn(times)
 
         forward = target - eye
         forward /= np.linalg.norm(forward, axis=-1, keepdims=True)
