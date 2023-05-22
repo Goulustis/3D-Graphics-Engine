@@ -26,19 +26,19 @@ class CameraSpline:
         self.intrinsics = read_intrinsics(intrinsics_path)
         self.mode = mode
 
-        self.get_dir_fn_dic = {"smooth":self.get_dir_smooth,
-                               "lerp": self.get_dir_lerp}
+        self.get_dir_fn_dic = {"smooth":self._get_dir_smooth,
+                               "lerp": self._get_dir_lerp}
 
         self.get_dir_fn = self.get_dir_fn_dic[self.mode]
     
-    def get_dir_smooth(self, times):
+    def _get_dir_smooth(self, times):
         eye = np.stack(scipy.interpolate.splev(times, self.eyerep), axis=-1)
         target = np.stack(scipy.interpolate.splev(times, self.targetrep),
                           axis=-1)
         up = np.stack(scipy.interpolate.splev(times, self.uprep), axis=-1)
         return eye, target, up
 
-    def get_dir_lerp(self, times):
+    def _get_dir_lerp(self, times):
         steps = 48
         t0 = np.floor(times * steps) / steps
         t1 = np.floor(times * steps + 1.0) / steps
