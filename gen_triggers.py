@@ -26,10 +26,9 @@ def gen_colcam_triggers(rgb_dir:str = None, max_t:int = int(10*1e6), mode:str = 
     return syn_ts
 
 
-def create_txt_triggers(n_frames, dst_path = "triggers.txt"):
-    max_t = int(10*1e6)
+def create_txt_triggers(n_frames, dst_path = "triggers.txt", max_t:int = int(10*1e6)):
 
-    trig_ts = gen_colcam_triggers(max_t=max_t, mode="start", n_frames=n_frames)
+    trig_ts = gen_colcam_triggers(max_t=max_t, mode="start", n_frames=n_frames, max_t=max_t)
 
     with open(dst_path, "w") as f:
         for t in trig_ts:
@@ -38,18 +37,19 @@ def create_txt_triggers(n_frames, dst_path = "triggers.txt"):
     print("done creating triggers")
 
 
-def generate_triggers(n_frames=2048):
+def generate_triggers(n_frames=2048, max_t:int = int(10*1e6)):
     dst_path = "camera_data/triggers.txt"
     if osp.exists(dst_path):
         os.remove(dst_path)
 
     # create_txt_triggers(4096, dst_path)
-    create_txt_triggers(n_frames, dst_path)
+    create_txt_triggers(n_frames, dst_path, max_t = max_t)
 
 
 
 if __name__ == "__main__":
-    generate_triggers(2048)
+    carpet_max_t = 1382440.499
+    generate_triggers(4096, max_t=carpet_max_t)
     # dst_path = "camera_data/triggers.txt"
     # if osp.exists(dst_path):
     #     os.remove(dst_path)
