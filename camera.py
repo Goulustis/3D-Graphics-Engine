@@ -1,6 +1,7 @@
 import glm
 import pygame as pg
-from camera_data.camera_spline import CameraSpline
+# from camera_data.camera_spline import CameraSpline
+from camera_data import CameraSpline, CarpetCameraSpline
 import numpy as np
 from tqdm import tqdm
 
@@ -74,7 +75,8 @@ class Camera:
 
 class PlayCamera(Camera):
     def __init__(self, app, position=(0, 0, 4), yaw=-90, pitch=0):
-        self.camera_spline = CameraSpline()
+        # self.camera_spline = CameraSpline()
+        self.camera_spline = CarpetCameraSpline()
         self.triggers = np.loadtxt("camera_data/triggers.txt")
         self.trig_idx = 0
         self.near, self.far = 1e-3, 50
