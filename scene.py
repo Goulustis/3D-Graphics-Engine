@@ -57,7 +57,7 @@ class CarpetScene:
         # translations
         self.dx = 0
         self.dy = -5
-        self.dz = -20
+        self.dz = 0 #-20
 
         # rotations
         self.rx = 0
@@ -97,30 +97,57 @@ class CarpetScene:
         for x in range(-n, n + 2, s):
             for y in range(0, n + 2, s):
                 # add(Cube(app, pos=(x, y, -3), tex_id=tex_dic[tex_idx%2]))
+                # add(Cube(app, pos=(x + self.dx, y + self.dy, -3 + self.dz), 
+                #          rot=(self.rx, self.ry, self.rz), 
+                #          scale=(self.scale, self.scale, self.scale),
+                #          tex_id=tex_idx%2 * 2))
                 add(Cube(app, pos=(x + self.dx, y + self.dy, -3 + self.dz), 
                          rot=(self.rx, self.ry, self.rz), 
                          scale=(self.scale, self.scale, self.scale),
-                         tex_id=tex_idx%2 * 2))
+                         tex_id="carpet"))
 
                 tex_idx += 1
 
         # cat
-        sz = 0.2
-        add(Cat(app, pos=(self.dx - 2, 5 + self.dy, self.dz), 
-                     scale=(sz*self.scale, sz*self.scale, sz*self.scale)))
+        # sz = 0.2
+        # add(Cat(app, pos=(self.dx - 2, 5 + self.dy, self.dz), 
+        #              scale=(sz*self.scale, sz*self.scale, sz*self.scale)))
+        sz1= 0.4
+        z1 = -3 + self.scale + sz1
+        add(Cube(app, pos=(self.dx - 0.5, 4.5 + self.dy, self.dz + z1),
+                 rot=(0, 0, 20),
+                 scale=(sz1, sz1, sz1),
+                 tex_id="rocks"))
         
-        add(Cube(app, pos=(self.dx + 1, 8 + self.dy, self.dz),
+        sz2 = 0.3
+        z2 =  -3 + self.scale + sz2
+        add(Cube(app, pos=(self.dx+0.5, 5 + self.dy, self.dz + z2),
                  rot=(0, 0, 45),
-                 tex_id=1))
-        
-        add(Cube(app, pos=(self.dx - 4, 8 + self.dy, self.dz),
-                 rot=(0, 0, 45),
-                 tex_id="test"))
+                 scale=(sz2, sz2, sz2),
+                 tex_id="grass"))
         
 
-        add(Cube(app, pos=(self.dx + 4, 5 + self.dy, self.dz),
-                 rot=(0, 0, 25),
-                 tex_id=1))
+        sz3= 0.35
+        z3 = -3 + self.scale + sz3
+        add(Cube(app, pos=(self.dx + 1.7, 6 + self.dy, self.dz + z3),
+                 rot=(0, 0, 0),
+                 scale=(sz3, sz3, sz3),
+                 tex_id="rocks"))
+
+        sz3= 0.35
+        z3 = -3 + self.scale + sz3
+        add(Cube(app, pos=(self.dx + 1, 4 + self.dy, self.dz + z3),
+                 rot=(0, 0, 0),
+                 scale=(sz3, sz3, sz3),
+                 tex_id="rocks"))
+        
+
+        sz4= 0.35
+        z4 = -3 + self.scale + sz3
+        add(Cube(app, pos=(self.dx - 1.5, 6.5 + self.dy, self.dz + z4),
+                 rot=(0, 0, 0),
+                 scale=(sz4, sz4, sz4),
+                 tex_id="rocks"))
 
         # moving cube
         # self.moving_cube = MovingCube(app, pos=(0, 6, 8), scale=(3, 3, 3), tex_id=1)
