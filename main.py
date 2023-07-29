@@ -5,18 +5,19 @@ import moderngl as mgl
 import sys
 from model import *
 from camera import Camera, PlayCamera
-from camera_data.camera_spline import read_intrinsics, intrinsics_path
+from camera_data.camera_spline import read_intrinsics, intrinsics_paths_dic
 from light import Light
 from mesh import Mesh
-from scene import Scene, CarpetScene
+from scene import Scene, CarpetScene, scene_cls_dict
 from scene_renderer import SceneRenderer
 from OpenGL.GL import *
 from PIL import Image
 from tqdm import tqdm
 import shutil
+from engine_configs import SCENE, MODE
 
 class GraphicsEngine:
-    def __init__(self, win_size=(1600, 900)):
+    def __init__(self, win_size=(1600, 900), scene_cls=Scene):
         # init pygame modules
         pg.init()
         # window size
@@ -41,13 +42,11 @@ class GraphicsEngine:
         # light
         self.light = Light(position=(-3,2,2))
         # camera
-        # self.camera = Camera(self)
-        self.camera = PlayCamera(self)
+        self.camera = Camera(self)
         # mesh
         self.mesh = Mesh(self)
         # scene
-        # self.scene = Scene(self)
-        self.scene = CarpetScene(self)
+        self.scene = scene_cls(self)
         # renderer
         self.scene_renderer = SceneRenderer(self)
 
@@ -83,7 +82,7 @@ class GraphicsEngine:
 
 
 class SimulatorEngine:
-    def __init__(self, win_size=(1600, 900), save_frame_dir = "dev_frames", save_mem=True):
+    def __init__(self, win_size=(1600, 900), scene_cls = Scene, save_frame_dir = "dev_frames", save_mem=True):
         # init pygame modules
         pg.init()
         # window size
@@ -118,7 +117,7 @@ class SimulatorEngine:
         self.mesh = Mesh(self)
         # scene
         # self.scene = Scene(self)
-        self.scene = CarpetScene(self)
+        self.scene = scene_cls(self)
         # renderer
         self.scene_renderer = SceneRenderer(self)
 
@@ -182,38 +181,8 @@ class SimulatorEngine:
 
 
 if __name__ == '__main__':
-    fx, fy, cx, cy = read_intrinsics(intrinsics_path)
+    fx, fy, cx, cy = read_intrinsics(intrinsics_paths_dic[f"{SCENE}_{MODE}".lower()])
     win_size = (int(cx*2), int(cy*2))
-    # app = GraphicsEngine(win_size=win_size)
-    app = SimulatorEngine(win_size=win_size, save_frame_dir="generated_imgs/cat_lerp_carpet")
+    # app = GraphicsEngine(win_size=win_size, scene_cls=scene_cls_dict[SCENE])
+    app = SimulatorEngine(win_size=win_size, scene_cls=scene_cls_dict[SCENE], save_frame_dir="generated_imgs/dev")
     app.run()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
