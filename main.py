@@ -156,6 +156,9 @@ class SimulatorEngine(GraphicsEngine):
 if __name__ == '__main__':
     fx, fy, cx, cy = read_intrinsics(intrinsics_paths_dic[f"{SCENE}_{MODE}".lower()])
     win_size = (int(cx*2), int(cy*2))
-    # app = GraphicsEngine(win_size=win_size, scene_cls=scene_cls_dict[SCENE])
-    app = SimulatorEngine(win_size=win_size, scene_cls=scene_cls_dict[SCENE], save_frame_dir="generated_imgs/dev")
+
+    if MODE == "run":
+        app = GraphicsEngine(win_size=win_size, scene_cls=scene_cls_dict[SCENE])
+    elif MODE == "render":
+        app = SimulatorEngine(win_size=win_size, scene_cls=scene_cls_dict[SCENE], save_frame_dir="generated_imgs/dev")
     app.run()
