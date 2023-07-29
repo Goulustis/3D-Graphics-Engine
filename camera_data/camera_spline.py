@@ -8,6 +8,11 @@ cam_spline_path = "camera_data/camera_spline.npy"
 # intrinsics_path = "camera_data/carpet_intrinsics.json"
 intrinsics_path = "camera_data/render_carpet_intrinsics.json"
 
+intrinsics_paths_dic = {"carpet_render": "camera_data/render_carpet_intrinsics.json", #{SCENE}_render intrinsics for experiment to deal with aliasing
+                        "robo_render" : "camera_data/render_intrinsics.json",
+                        "carpet_run": "camera_data/carpet_intrinsics.json",
+                        "robo_run":"camera_data/intrinsics.json"}
+
 
 def read_intrinsics(intrxs_path):
     with open(intrxs_path, "r") as f:
