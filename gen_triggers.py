@@ -2,6 +2,7 @@ import numpy as np
 import glob
 import os.path as osp
 import os
+from engine_configs import SCENE
 
 def gen_colcam_triggers(rgb_dir:str = None, max_t = int(10*1e6), min_t = 0, mode:str = "mid", n_frames:int = 4096):
     """
@@ -43,14 +44,25 @@ def generate_triggers(n_frames=2048, max_t:int = int(10*1e6), min_t = 0):
     if osp.exists(dst_path):
         os.remove(dst_path)
 
-    # create_txt_triggers(4096, dst_path)
-    create_txt_triggers(n_frames, dst_path, max_t = max_t, min_t = min_t)
+    if SCENE == "robo":
+        create_txt_triggers(4096, dst_path)
+    elif SCENE == "carpet":
+        create_txt_triggers(n_frames, dst_path, max_t = max_t, min_t = min_t)
+    else:
+        raise Exception(f"{SCENE} not supported")
 
 
 
 if __name__ == "__main__":
-    carpet_min_t = 84
-    carpet_max_t = 1382440.499
-    generate_triggers(4096, max_t=carpet_max_t, min_t = carpet_min_t) # generate carpet ts
-    # generate_triggers(4096)  # generate robo ts
+    n_frames = 4096
+
+    if SCENE == "robo":
+        generate_triggers(n_frames)
+    elif SCENE == "carpet":
+        carpet_min_t = 84
+        carpet_max_t = 1382440.499
+        generate_triggers(n_frames, max_t=carpet_max_t, min_t = carpet_min_t) # generate carpet ts
+    else:
+        raise Exception(f"{SCENE} not supported")
     
+    print(f"created {n_frames} {SCENE} triggers")
