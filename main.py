@@ -81,42 +81,15 @@ class GraphicsEngine:
             self.delta_time = self.clock.tick(120)
 
 
-class SimulatorEngine:
+class SimulatorEngine(GraphicsEngine):
     def __init__(self, win_size=(1600, 900), scene_cls = Scene, save_frame_dir = "dev_frames", save_mem=True):
-        # init pygame modules
-        pg.init()
-        # window size
-        self.WIN_SIZE = win_size
+        super().__init__(win_size, scene_cls)
+
         self.save_winsize = (win_size[0]//3, win_size[1]//3)
-
-
-        # set opengl attr
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, 3)
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, 3)
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
-        # create opengl context
-        # pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF | pg.HIDDEN)
-        pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF)
-        # mouse settings
-        pg.event.set_grab(False)
-        pg.mouse.set_visible(True)
-        
-        
-        # detect and use existing opengl context
-        self.ctx = mgl.create_context()
-        # self.ctx.front_face = 'cw'
-        self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE)
-        self.time = 0
-        self.delta_time = 0
-        # light
-        self.light = Light(position=(-3,2,2))
-        # camera
-        # self.camera = Camera(self)
         self.camera = PlayCamera(self)
         # mesh
         self.mesh = Mesh(self)
         # scene
-        # self.scene = Scene(self)
         self.scene = scene_cls(self)
         # renderer
         self.scene_renderer = SceneRenderer(self)
