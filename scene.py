@@ -1,7 +1,6 @@
 from model import *
 import glm
 
-
 class Scene:
     def __init__(self, app):
         self.app = app
@@ -156,3 +155,8 @@ class CarpetScene:
     def update(self):
         pass
         # self.moving_cube.rot.xyz = self.app.time
+
+
+
+scene_cls_dict = {"robo" : Scene,
+                  "carpet" : CarpetScene}
