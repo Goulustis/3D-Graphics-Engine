@@ -45,7 +45,7 @@ def generate_triggers(n_frames=2048, max_t:int = int(10*1e6), min_t = 0):
         os.remove(dst_path)
 
     if SCENE == "robo":
-        create_txt_triggers(4096, dst_path)
+        create_txt_triggers(n_frames, dst_path)
     elif SCENE == "carpet":
         create_txt_triggers(n_frames, dst_path, max_t = max_t, min_t = min_t)
     else:
@@ -54,7 +54,7 @@ def generate_triggers(n_frames=2048, max_t:int = int(10*1e6), min_t = 0):
 
 
 if __name__ == "__main__":
-    n_frames = 4096
+    n_frames = 2048
 
     if SCENE == "robo":
         generate_triggers(n_frames)
