@@ -85,7 +85,7 @@ class SimulatorEngine(GraphicsEngine):
     def __init__(self, win_size=(1600, 900), scene_cls = Scene, save_frame_dir = "dev_frames", save_mem=True):
         super().__init__(win_size, scene_cls)
 
-        self.save_winsize = (win_size[0]//3, win_size[1]//3)
+        self.save_winsize = (win_size[0]//2, win_size[1]//2)
         self.camera = PlayCamera(self)
         # mesh
         self.mesh = Mesh(self)
@@ -160,5 +160,5 @@ if __name__ == '__main__':
     if MODE == "run":
         app = GraphicsEngine(win_size=win_size, scene_cls=scene_cls_dict[SCENE])
     elif MODE == "render":
-        app = SimulatorEngine(win_size=win_size, scene_cls=scene_cls_dict[SCENE], save_frame_dir="generated_imgs/dev")
+        app = SimulatorEngine(win_size=win_size, scene_cls=scene_cls_dict[SCENE], save_frame_dir="generated_imgs/cat_simple_2048")
     app.run()
