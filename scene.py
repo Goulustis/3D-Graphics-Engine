@@ -30,8 +30,11 @@ class Scene:
         # wall
         for x in range(-n, n + 2, s):
             for y in range(0, n + 2, s):
-                # add(Cube(app, pos=(x, y, -3), tex_id=tex_dic[tex_idx%2]))
                 add(Cube(app, pos=(x, y, -3), tex_id=tex_idx%2 * 2))
+                # if tex_idx%2 == 0:
+                #     add(Cube(app, pos=(x, y, -3), tex_id=tex_idx%2 * 2))
+                # else:
+                #     add(Cube(app, pos=(x, y, -3), tex_id="ori_carpet"))
 
                 tex_idx += 1
 
