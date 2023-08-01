@@ -16,6 +16,7 @@ class Texture:
         self.textures["black"] = self.get_texture(path="textures/black.png")
         self.textures["rocks"] = self.get_texture(path="textures/rocks.png")
         self.textures["carpet"] = self.get_texture(path="textures/carpet.png")
+        self.textures["ori_carpet"] = self.get_texture(path="textures/ori_carpet.jpg")
         self.textures["grass"] = self.get_texture(path="textures/grass.png")
 
         self.textures['cat'] = self.get_texture(path='objects/cat/20430_cat_diff_v1.jpg')
