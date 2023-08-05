@@ -87,7 +87,7 @@ class SimulatorEngine:
         pg.init()
         # window size
         self.WIN_SIZE = win_size
-        self.save_winsize = (win_size[0]//3, win_size[1]//3)
+        self.save_winsize = (win_size[0]//2, win_size[1]//2)
 
 
         # set opengl attr
@@ -183,35 +183,8 @@ if __name__ == '__main__':
     fx, fy, cx, cy = read_intrinsics(intrinsics_path)
     win_size = (int(cx*2), int(cy*2))
     # app = GraphicsEngine(win_size=win_size)
-    app = SimulatorEngine(win_size=win_size, save_frame_dir="generated_imgs/cat_lerp")
+    app = SimulatorEngine(win_size=win_size, save_frame_dir="generated_imgs/cat_simple_2048")
     app.run()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
