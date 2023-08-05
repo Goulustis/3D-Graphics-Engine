@@ -32,7 +32,7 @@ class Scene:
         for x in range(-n, n + 2, s):
             for y in range(0, n + 2, s):
                 # add(Cube(app, pos=(x, y, -3), tex_id=tex_dic[tex_idx%2]))
-                add(Cube(app, pos=(x, y, -3)))
+                add(Cube(app, pos=(x, y, -3), tex_id=tex_idx%2 * 2))
 
                 tex_idx += 1
 
