@@ -18,7 +18,7 @@ def read_intrinsics(intrxs_path):
     return fx, fy, cx, cy
 
 class CameraSpline:
-    def __init__(self, filename=cam_spline_path, mode="lerp"):
+    def __init__(self, filename=cam_spline_path, mode="smooth"):
         splinerep = np.load(filename, allow_pickle=True).item()
         self.eyerep = splinerep["eye"]
         self.targetrep = splinerep["target"]
