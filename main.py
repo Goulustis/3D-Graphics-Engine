@@ -14,6 +14,7 @@ from OpenGL.GL import *
 from PIL import Image
 from tqdm import tqdm
 import shutil
+import argparse
 
 class GraphicsEngine:
     def __init__(self, win_size=(1600, 900)):
@@ -180,10 +181,14 @@ class SimulatorEngine:
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--outdir", default="generated_imgs/dev")
+    args = parser.parse_args()
     fx, fy, cx, cy = read_intrinsics(intrinsics_path)
     win_size = (int(cx*2), int(cy*2))
     # app = GraphicsEngine(win_size=win_size)
-    app = SimulatorEngine(win_size=win_size, save_frame_dir="generated_imgs/cat_simple_2048")
+    # app = SimulatorEngine(win_size=win_size, save_frame_dir="generated_imgs/carpet_tex_2048")
+    app = SimulatorEngine(win_size=win_size, save_frame_dir=args.outdir)
     app.run()
 
 

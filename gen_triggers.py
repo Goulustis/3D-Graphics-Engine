@@ -2,6 +2,7 @@ import numpy as np
 import glob
 import os.path as osp
 import os
+import argparse
 
 def gen_colcam_triggers(rgb_dir:str = None, max_t:int = int(10*1e6), mode:str = "mid", n_frames:int = 4096):
     """
@@ -49,7 +50,10 @@ def generate_triggers(n_frames=2048):
 
 
 if __name__ == "__main__":
-    generate_triggers(2048)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--num_frames", type=int)
+    args = parser.parse_args()
+    generate_triggers(args.num_frames)
     # dst_path = "camera_data/triggers.txt"
     # if osp.exists(dst_path):
     #     os.remove(dst_path)
